@@ -1,0 +1,277 @@
+{
+	"FR": {
+		"color": "#4286f4",
+		"alvl": 6
+	},
+	"CH": {
+		"color": "#9d41f4",
+		"alvl": 4
+	},
+	"BE": {
+		"color": "#000000",
+		"alvl": 6
+	},
+	"DE": {
+		"color": "#ffce00",
+		"alvl": 4
+	},
+	"AT": {
+		"color": "#ed2939",
+		"alvl": 4
+	},
+	"IT": {
+		"color": "#009246",
+		"alvl": 4
+	},
+	"ES": {
+		"color": "#c8b100",
+		"alvl": 4
+	},
+	"GB": {
+		"color": "#CE1126",
+		"alvl": 4
+	},
+	"NL": {
+		"color": "#FF4F00",
+		"alvl": 4
+	},
+	"LU": {
+		"color": "#00A1DE",
+		"alvl": 2
+	},
+	"SI": {
+		"color": "#0000BF",
+		"alvl": 2
+	},
+	"CZ": {
+		"color": "#284696",
+		"alvl": 4
+	},
+	"BG": {
+		"color": "#00966E",
+		"alvl": 6
+	},
+	"AD": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"SK": {
+		"alvl": 2,
+		"color": "#ffffff"
+	},
+	"HU": {
+		"alvl": 6,
+		"color": "#436F4D"
+	},
+	"GE": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"VA": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"PL": {
+		"alvl": 4,
+		"color": "#dc143c"
+	},
+	"DK": {
+		"alvl": 4,
+		"color": "#C60C30"
+	},
+	"SE": {
+		"alvl": 4,
+		"color": "#006aa7",
+		"simplify": 0.01
+	},
+	"FO": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"AL": {
+		"alvl": 2,
+		"color": "#e41e20"
+	},
+	"MK": {
+		"alvl": 2,
+		"color": "#f8e92e"
+	},
+	"ME": {
+		"alvl": 2,
+		"color": "#c40308"
+	},
+	"FI": {
+		"alvl": 2,
+		"color": "#ffffff",
+		"simplify": 0.01
+	},
+	"SM": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"MD": {
+		"alvl": 2,
+		"color": "#0046ae"
+	},
+	"BY": {
+		"alvl": 2,
+		"color": "#4aa657"
+	},
+	"RU": {
+		"alvl": 4,
+		"color": "#d52b1e"
+	},
+	"UA": {
+		"alvl": 2,
+		"color": "#005BBB"
+	},
+	"IM": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"IE": {
+		"alvl": 4,
+		"color": "#169b62"
+	},
+	"LV": {
+		"alvl": 2,
+		"color": "#9E3039"
+	},
+	"LT": {
+		"alvl": 2,
+		"color": "#FDB913"
+	},
+	"EE": {
+		"alvl": 2,
+		"color": "#0072ce"
+	},
+	"RO": {
+		"alvl": 4,
+		"color": "#FCD116"
+	},
+	"TR": {
+		"alvl": 4,
+		"color": "#E30A17"
+	},
+	"JO": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"SY": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"LB": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"GR": {
+		"alvl": 6,
+		"color": "#0D5EAF"
+	},
+	"DZ": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"TN": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"LY": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"HR": {
+		"alvl": 2,
+		"color": "#ffffff"
+	},
+	"GG": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"PT": {
+		"alvl": 6,
+		"color": "#006000"
+	},
+	"IS": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"IQ": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"IR": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"SA": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"CY": {
+		"alvl": 2,
+		"color": "#ffffff"
+	},
+	"AM": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"AZ": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"MT": {
+		"alvl": 2,
+		"color": "#cf142b"
+	},
+	"JE": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"MC": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"LI": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"GI": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"IL": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"EG": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"PS": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"RS": {
+		"alvl": 2,
+		"color": "#c6363c"
+	},
+	"GL": {
+		"alvl": 2,
+		"color": "#000000"
+	},
+	"BA": {
+		"alvl": 2,
+		"color": "#fecb00"
+	},
+	"NO": {
+		"alvl": 4,
+		"color": "#ef2b2d",
+		"simplify": 0.01
+	},
+	"MA": {
+		"alvl": 2,
+		"color": "#000000"
+	}
+}

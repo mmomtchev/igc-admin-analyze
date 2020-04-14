@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "igc_admin_analyze",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": [
+                "-a", "Europe",
+                "-i", "record_de_france.igc",
+				"-v",
+				"-s", "Yonne,Aube,Nièvre,1450201,Cher,51,Creuse"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}
