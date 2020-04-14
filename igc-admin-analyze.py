@@ -7,12 +7,14 @@ import json
 from shapely.geometry import shape, Point, box
 from rtree import index as rindex
 
-def get_all_intersecting_polygons(polygons, box):
+def get_two_intersecting_polygons(polygons, box):
     r = []
     for i in range(len(polygons)):
         p = polygons[i]
         if p['shape'].intersects(box):
             r.append(i)
+        if len(p) > 1:
+            break
     return r
 
 
@@ -25,7 +27,7 @@ def get_intersecting_polygon_with_rtree_cache(polygons, point):
         return p[0]
 
     left, bottom, right, top = (-180, -90, 180, 90)
-    while len(get_all_intersecting_polygons(polygons, box(left, bottom, right, top))) > 1:
+    while len(get_two_intersecting_polygons(polygons, box(left, bottom, right, top))) > 1:
         middlex = left + (right - left) / 2
         middley = bottom + (top - bottom) / 2
         if (point.x > middlex):
@@ -37,7 +39,7 @@ def get_intersecting_polygon_with_rtree_cache(polygons, point):
         else:
             top = middley
 
-    p = get_all_intersecting_polygons(polygons, box(left, bottom, right, top))
+    p = get_two_intersecting_polygons(polygons, box(left, bottom, right, top))
     if len(p) < 1:
         rcache.insert(-1, (left, bottom, right, top))
         return -1
