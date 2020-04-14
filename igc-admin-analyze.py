@@ -13,7 +13,7 @@ def get_two_intersecting_polygons(polygons, box):
         p = polygons[i]
         if p['shape'].intersects(box):
             r.append(i)
-        if len(p) > 1:
+        if len(r) > 2:
             break
     return r
 
