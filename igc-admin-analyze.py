@@ -149,12 +149,13 @@ for feature in admin['features']:
     if args['verbose']:
         print('.', end='', flush=True)
 
-if args['verbose']:
-    print('\nProcessing fixes (using {} cores)'.format(
-        multiprocessing.cpu_count()), end='', flush=True)
 running_threads = []
+chunk_size = int(len(gps_fixes)/(multiprocessing.cpu_count()*4))
+if args['verbose']:
+    print('\nProcessing fixes (using {} cores, {} fixes per chunk)'.format(
+        multiprocessing.cpu_count(), chunk_size), end='', flush=True)
 with ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
-    executor.map(process_gps_points, chunks(gps_fixes, 2000))
+    executor.map(process_gps_points, chunks(gps_fixes, chunk_size))
 if args['verbose']:
     print('', flush=True)
 
