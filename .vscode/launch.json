@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "${file}",
             "args": [
-                "-a", "Europe",
+                "-a", "FR",
                 "-i", "record_de_france.igc",
 				"-v",
 				"-s", "Yonne,Aube,Nièvre,1450201,Cher,51,Creuse"

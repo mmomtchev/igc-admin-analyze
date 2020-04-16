@@ -6,26 +6,47 @@ from aerofiles.igc import Reader
 import json
 from shapely.geometry import shape, Point, box
 from rtree import index as rindex
+import threading
+from concurrent.futures import ThreadPoolExecutor
+import copy
+import multiprocessing
 
+# Find if there are 0, 1 or more administrative divisions
+# intersecting the bounding box
+# This is the time-critical function
+# and it has a per-thread deep copy
 def get_two_intersecting_polygons(polygons, box):
     r = []
     for i in range(len(polygons)):
         p = polygons[i]
-        if p['shape'].intersects(box):
+        # I refuse to believe that Python does not have a reentrant geometry
+        # library in 2020, forcing me to do this, but it seems to be the case
+        if threading.get_ident() not in p.keys():
+            p[threading.get_ident()] = copy.deepcopy(p['shape'])
+        if p[threading.get_ident()].intersects(box):
             r.append(i)
         if len(r) > 2:
             break
     return r
 
+# slice an array into chunks
+def chunks(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
 
 rcache = None
-
+rcacheLock = threading.Lock()
 
 def get_intersecting_polygon_with_rtree_cache(polygons, point):
+    rcacheLock.acquire()
     p = list(rcache.intersection((point.x, point.y)))
+    rcacheLock.release()
     if len(p) > 0:
         return p[0]
-
+    
+    # Start with the world, divide by 4 at each step and continue with the
+    # subrectangle bbox containing the matched point until the bbox contains
+    # only one administrative division 
     left, bottom, right, top = (-180, -90, 180, 90)
     while len(get_two_intersecting_polygons(polygons, box(left, bottom, right, top))) > 1:
         middlex = left + (right - left) / 2
@@ -39,12 +60,42 @@ def get_intersecting_polygon_with_rtree_cache(polygons, point):
         else:
             top = middley
 
+    # Keep track of negative responses too, they can be very slow
     p = get_two_intersecting_polygons(polygons, box(left, bottom, right, top))
     if len(p) < 1:
-        rcache.insert(-1, (left, bottom, right, top))
+        rcacheLock.acquire()
+        # Maybe another thread already found this bbox
+        if (len(list(rcache.intersection((point.x, point.y)))) == 0):
+            rcache.insert(-1, (left, bottom, right, top))
+        rcacheLock.release()
         return -1
-    rcache.insert(p[0], (left, bottom, right, top))
+
+    rcacheLock.acquire()
+    # Maybe another thread already found this bbox
+    if (len(list(rcache.intersection((point.x, point.y)))) == 0):
+        rcache.insert(p[0], (left, bottom, right, top))
+    rcacheLock.release()
     return p[0]
+
+
+# The thread function
+progress = 0
+def process_gps_points(gps_points):
+    global progress, args
+    for record in gps_points:
+        rcacheLock.acquire()
+        if args['verbose'] and progress % 100 == 0:
+            print('.', end='', flush=True)
+        progress += 1
+        rcacheLock.release()
+
+        lat = record['lat']
+        lon = record['lon']
+        point = Point(lon, lat)
+
+        record['polygon'] = get_intersecting_polygon_with_rtree_cache(
+            polygons, point)
+    return
 
 
 ap = argparse.ArgumentParser()
@@ -66,6 +117,7 @@ if args['verbose']:
     print('Reading ' + args['igc'])
 with open(args['igc'], 'r') as fd_igc:
     igc = Reader().read(fd_igc)
+gps_fixes = igc['fix_records'][1]
 
 if args['verbose']:
     print('Reading ' + args['admin'] + '.geojson')
@@ -96,24 +148,22 @@ for feature in admin['features']:
     })
     if args['verbose']:
         print('.', end='', flush=True)
+
 if args['verbose']:
-    print('')
+    print('\nProcessing fixes (using {} cores)'.format(
+        multiprocessing.cpu_count()), end='', flush=True)
+running_threads = []
+with ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
+    executor.map(process_gps_points, chunks(gps_fixes, 2000))
+if args['verbose']:
+    print('', flush=True)
 
 last_polygon = None
 invalid = 0
-progress = 0
 launch = None
 land = None
-for record in igc['fix_records'][1]:
-    if args['verbose'] and progress % 100 == 0:
-        print('.', end='', flush=True)
-    progress += 1
-
-    lat = record['lat']
-    lon = record['lon']
-    point = Point(lon, lat)
-
-    p = get_intersecting_polygon_with_rtree_cache(polygons, point)
+for record in gps_fixes:
+    p = record['polygon']
     if p >= 0:
         if last_polygon is None or last_polygon != p:
             if args['verbose']:
