@@ -10,6 +10,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 import copy
 import multiprocessing
+import math
 
 # Find if there are 0, 1 or more administrative divisions
 # intersecting the bounding box
@@ -60,22 +61,41 @@ def get_intersecting_polygon_with_rtree_cache(polygons, point):
         else:
             top = middley
 
-    # Keep track of negative responses too, they can be very slow
     p = get_two_intersecting_polygons(polygons, box(left, bottom, right, top))
     if len(p) < 1:
-        rcacheLock.acquire()
-        # Maybe another thread already found this bbox
-        if (len(list(rcache.intersection((point.x, point.y)))) == 0):
-            rcache.insert(-1, (left, bottom, right, top))
-        rcacheLock.release()
-        return -1
+        # Keep track of negative responses too, they can be very slow
+        ri = -1
+    else:
+        ri = p[0]
 
     rcacheLock.acquire()
     # Maybe another thread already found this bbox
     if (len(list(rcache.intersection((point.x, point.y)))) == 0):
-        rcache.insert(p[0], (left, bottom, right, top))
+        rcache.insert(ri, (left, bottom, right, top))
     rcacheLock.release()
-    return p[0]
+    return ri
+
+
+def rcache_stats():
+    if args['verbose']:
+        rcacheLock.acquire()
+        it = rcache.intersection((-180, -90, 180, 90), objects=True)
+        smallest, largest = None, None
+        n = 0
+        # this does not account for the curvature of
+        # but it is only for performance tuning
+        sqmile = (1852 * 60) * (1852 * 60)
+        for i in it:
+            area = box(i.bbox[0], i.bbox[1], i.bbox[2], i.bbox[3]).area * sqmile
+            if smallest is None or area < smallest:
+                smallest = area
+            if largest is None or area > largest:
+                largest = area
+            n += 1
+        print('{} elements in rcache, smallest is {}, largest is {}'.format(n, smallest, largest))
+        rcacheLock.release()
+
+
 
 
 # The thread function
@@ -83,11 +103,9 @@ progress = 0
 def process_gps_points(gps_points):
     global progress, args
     for record in gps_points:
-        rcacheLock.acquire()
         if args['verbose'] and progress % 100 == 0:
             print('.', end='', flush=True)
         progress += 1
-        rcacheLock.release()
 
         lat = record['lat']
         lon = record['lon']
@@ -132,6 +150,7 @@ except:
     os.unlink(os.path.join(basedir, 'temp', args['admin'] + '.dat'))
     os.unlink(os.path.join(basedir, 'temp', args['admin'] + '.idx'))
     rcache = rindex.Rtree(os.path.join('temp', args['admin']))
+rcache_stats()
 
 polygons = []
 if args['verbose']:
@@ -149,7 +168,6 @@ for feature in admin['features']:
     if args['verbose']:
         print('.', end='', flush=True)
 
-running_threads = []
 chunk_size = int(len(gps_fixes)/(multiprocessing.cpu_count()*4))
 if args['verbose']:
     print('\nProcessing fixes (using {} cores, {} fixes per chunk)'.format(
@@ -218,3 +236,4 @@ if args['selected'] is not None:
             selected * 100 / total, selected, total))
     else:
         print('{:.2f}%'.format(selected * 100 / total))
+rcache_stats()
