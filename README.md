@@ -45,13 +45,13 @@ Land in France
 
 
 ## Inner workings
-This tool tries to be as precise as possible. For example the above record flight follows the Allier boundary for a few tens of kms. Simplified datasets produce incorrect results. The data used is the full scale OSM administrative boundary data which amounts to about 1,200,000 vertices for the French departments. As direct matching of 8000 to 10000 flight track points to such a number of vertices is not feasible, this tool uses a bounding box cache in a quadratic radix tree that is saved across sessions.
+This tool tries to be as precise as possible. For example the above record flight follows the Allier boundary for a few tens of kms. Simplified datasets produce incorrect results. The data used is the full scale OSM administrative boundary data which amounts to about 1,200,000 vertices for the French departments. As direct matching of 8000 to 10000 flight track points to such a number of vertices is not feasible, this tool uses a bounding box cache in a 2D R-tree that is saved across sessions.
 First run over a new area tends to be somewhat slow, with subsequent runs being almos instantenous.
 
 ### Algorithm
-For each point, check if there is a bounding box in the quadratic tree and get the administrative area from it
+For each point, check if there is a bounding box in the 2D R-tree and get the administrative area from it
 Otherwise try to find the largest possible square bounding box corresponding to this point which does not cross into another administrative area and add it to the cache
-At the end of the run, each administrative area is going to be represented by a set of square bounding boxes in a quadratic tree
+At the end of the run, each administrative area is going to be represented by a set of square bounding boxes in a 2D R-tree
 
 ### OSM Overpass extraction
 A script that can be used to re-extract the data from the Overpass server of OpenstreetMap is included, should you wish to extract the data yourself
